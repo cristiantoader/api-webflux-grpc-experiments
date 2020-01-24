@@ -9,11 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sample-reactive-client-gpb</artifactId>
-
-    <properties>
-        <metrics-core.version>3.0.2</metrics-core.version>
-    </properties>
+    <artifactId>sample-benchmarking-client</artifactId>
 
     <dependencies>
         <dependency>

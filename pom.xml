@@ -12,7 +12,7 @@
     <modules>
         <module>sample-gpb-model</module>
         <module>sample-spring-webflux-server-gpb</module>
-        <module>sample-reactive-client-gpb</module>
+        <module>sample-benchmarking-client</module>
         <module>sample-grpc-server</module>
     </modules>
 
@@ -28,6 +28,7 @@
         <grpc.version>1.26.0</grpc.version>
         <netty.tcnative.version>2.0.25.Final</netty.tcnative.version>
         <javax.annotation-api.version>1.2</javax.annotation-api.version>
+        <metrics-core.version>3.0.2</metrics-core.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +41,7 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- grpc-protobuf and protobuf-java have conflicting dependencies. -->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
