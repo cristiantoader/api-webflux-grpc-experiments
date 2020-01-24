@@ -1,4 +1,6 @@
-Benchmarking results
+# Benchmarking results
+
+## Part 1
 
 Surprising results with GPB format underperforming String JSONs in HTTP/2 Flux response regardless of GPB compression.
 
@@ -28,4 +30,32 @@ json_person_entries_per_second
      1-minute rate = 276674.82 events/second
      5-minute rate = 222948.02 events/second
     15-minute rate = 211684.23 events/second
+```
+
+## Part 2
+
+Trying not to use the spring ProtobufHttpMessageConverter, results improve but still pure jackson json is x 3 faster.
+
+```
+
+-- Meters ----------------------------------------------------------------------
+gpb_bytes_person_entries_per_second
+             count = 8501919
+         mean rate = 102411.74 events/second
+     1-minute rate = 83074.46 events/second
+     5-minute rate = 39503.16 events/second
+    15-minute rate = 27108.71 events/second
+gpb_person_entries_per_second
+             count = 3466641
+         mean rate = 41819.96 events/second
+     1-minute rate = 37851.38 events/second
+     5-minute rate = 29222.81 events/second
+    15-minute rate = 26748.61 events/second
+json_person_entries_per_second
+             count = 26582990
+         mean rate = 320680.77 events/second
+     1-minute rate = 288529.25 events/second
+     5-minute rate = 221047.51 events/second
+    15-minute rate = 201583.12 events/second
+
 ```

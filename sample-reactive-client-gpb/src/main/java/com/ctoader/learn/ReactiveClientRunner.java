@@ -3,6 +3,7 @@ package com.ctoader.learn;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -26,8 +27,21 @@ public class ReactiveClientRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        runGpbBytesBenchmarking();
         runJsonBenchmarking();
         runGpbBenchmarking();
+    }
+
+    private void runGpbBytesBenchmarking() {
+        Flux<ByteArrayWrapper> personFlux = webClient.get()
+                .uri("/person/bytes")
+                .retrieve()
+                .bodyToFlux(ByteArrayWrapper.class);
+
+        Meter personEntriesPerSecond = metricRegistry.meter("gpb_bytes_person_entries_per_second");
+
+        personFlux.map(Unchecked.function(it -> PersonWrapper.Person.parseFrom(it.getBytes())))
+                  .subscribe(it -> personEntriesPerSecond.mark());
     }
 
     private void runJsonBenchmarking() {
@@ -37,9 +51,7 @@ public class ReactiveClientRunner implements ApplicationRunner {
                 .bodyToFlux(String.class);
 
         Meter personEntriesPerSecond = metricRegistry.meter("json_person_entries_per_second");
-        Meter personBytesPerSecond = metricRegistry.meter("json_person_bytes_per_second");
-
-        personFlux.subscribe(person -> processJsonPersonFlux(personEntriesPerSecond, personBytesPerSecond, person));
+        personFlux.subscribe(person -> personEntriesPerSecond.mark());
     }
 
     private void runGpbBenchmarking() {
@@ -49,32 +61,7 @@ public class ReactiveClientRunner implements ApplicationRunner {
                 .bodyToFlux(PersonWrapper.Person.class);
 
         Meter personEntriesPerSecond = metricRegistry.meter("gpb_person_entries_per_second");
-        Meter personBytesPerSecond = metricRegistry.meter("gpb_person_bytes_per_second");
-
-        personFlux.subscribe(person -> processGpbPersonFlux(personEntriesPerSecond, personBytesPerSecond, person));
+        personFlux.subscribe(person -> personEntriesPerSecond.mark());
     }
 
-    private void processGpbPersonFlux(Meter personEntriesPerSecond,
-                                       Meter personBytesPerSecond,
-                                       PersonWrapper.Person person) {
-        try {
-            personEntriesPerSecond.mark();
-            personBytesPerSecond.mark(person.toByteArray().length);
-
-        } catch (Exception e) {
-            log.error("", e);
-        }
-    }
-
-    private void processJsonPersonFlux(Meter personEntriesPerSecond,
-                                       Meter personBytesPerSecond,
-                                       String person) {
-        try {
-            personEntriesPerSecond.mark();
-            personBytesPerSecond.mark(person.getBytes().length);
-
-        } catch (Exception e) {
-            log.error("", e);
-        }
-    }
 }
