@@ -34,13 +34,14 @@ public class PersonController {
     }
 
     // knows by default to use application/stream+json)
-    @GetMapping(value = "/json")
-    public Flux<String> generatePeopleJsonFormat() {
+    @GetMapping(value = "/json", produces = "application/stream+json")
+    public Flux<StringWrapper> generatePeopleJsonFormat() {
         log.info("Received request to find all people via json string.");
 
         return Flux.range(0, 100_000_000)
                 .map(index -> makePerson(index))
-                .map(Unchecked.function(it -> JsonFormat.printer().print(it)));
+                .map(Unchecked.function(it -> JsonFormat.printer().print(it)))
+                .map(StringWrapper::new);
     }
 
 

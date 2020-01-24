@@ -4,6 +4,7 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.ctoader.learn.ByteArrayWrapper;
 import com.ctoader.learn.PersonWrapper;
+import com.ctoader.learn.StringWrapper;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,10 +48,10 @@ public class WebfluxBenchmarkingService implements BenchmarkingService {
     }
 
     private void runJsonBenchmarking() {
-        Flux<String> personFlux = webClient.get()
+        Flux<StringWrapper> personFlux = webClient.get()
                 .uri("/person/json")
                 .retrieve()
-                .bodyToFlux(String.class);
+                .bodyToFlux(StringWrapper.class);
 
         Meter personEntriesPerSecond = metricRegistry.meter(JSON_PERSON_ENTRIES_PER_SECOND);
         personFlux.subscribe(person -> personEntriesPerSecond.mark());

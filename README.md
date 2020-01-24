@@ -91,3 +91,37 @@ webflux_json_person_entries_per_second
      5-minute rate = 109511.57 events/second
     15-minute rate = 87130.15 events/second
 ```
+
+### Part 4 - fixing the json webflux bug
+
+
+The flux returned from the spring webflux server was not actually complete. Probably iterable responses 
+are further split by spring in the response for improved buffering.
+
+```
+-- Meters ----------------------------------------------------------------------
+grpc_gpb_person_entries_per_second
+             count = 1012135
+         mean rate = 19550.27 events/second
+     1-minute rate = 15468.34 events/second
+     5-minute rate = 11249.93 events/second
+    15-minute rate = 10267.80 events/second
+webflux_gpb_bytes_person_entries_per_second
+             count = 1193870
+         mean rate = 22981.75 events/second
+     1-minute rate = 20650.97 events/second
+     5-minute rate = 18288.15 events/second
+    15-minute rate = 17748.43 events/second
+webflux_gpb_person_entries_per_second
+             count = 1277971
+         mean rate = 24656.01 events/second
+     1-minute rate = 22537.76 events/second
+     5-minute rate = 20311.68 events/second
+    15-minute rate = 19805.18 events/second
+webflux_json_person_entries_per_second
+             count = 978810
+         mean rate = 18883.65 events/second
+     1-minute rate = 14460.00 events/second
+     5-minute rate = 9834.88 events/second
+    15-minute rate = 8774.91 events/second
+```
