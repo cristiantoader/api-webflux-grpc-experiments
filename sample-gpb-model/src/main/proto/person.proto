@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+option java_package = "com.ctoader.learn";
+option java_outer_classname = "PersonWrapper";
+
+message Person {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+}
