@@ -1,6 +1,5 @@
 package com.ctoader.learn;
 
-import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Unchecked;
@@ -9,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
-import java.util.Arrays;
-import java.util.List;
+import static com.ctoader.learn.PersonUtils.makePerson;
 
 @RestController
 @RequestMapping(value = "/person")
@@ -45,11 +43,5 @@ public class PersonController {
                 .map(Unchecked.function(it -> JsonFormat.printer().print(it)));
     }
 
-    private static PersonWrapper.Person makePerson(Integer index) {
-        return PersonWrapper.Person.newBuilder()
-                .setId(index)
-                .setName("Pearson " + index)
-                .setDescription("This is some description we are sending.")
-                .build();
-    }
+
 }

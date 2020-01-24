@@ -46,6 +46,17 @@
             <artifactId>jool</artifactId>
             <version>${jool.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-tcnative-boringssl-static</artifactId>
+            <version>${netty.tcnative.version}</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

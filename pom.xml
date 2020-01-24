@@ -13,6 +13,7 @@
         <module>sample-gpb-model</module>
         <module>sample-spring-webflux-server-gpb</module>
         <module>sample-reactive-client-gpb</module>
+        <module>sample-grpc-server</module>
     </modules>
 
     <properties>
@@ -24,6 +25,9 @@
         <spring.boot.version>2.2.4.RELEASE</spring.boot.version>
         <lombok.version>1.18.10</lombok.version>
         <jool.version>0.9.12</jool.version>
+        <grpc.version>1.26.0</grpc.version>
+        <netty.tcnative.version>2.0.25.Final</netty.tcnative.version>
+        <javax.annotation-api.version>1.2</javax.annotation-api.version>
     </properties>
 
     <dependencyManagement>
@@ -34,6 +38,12 @@
                 <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>21.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

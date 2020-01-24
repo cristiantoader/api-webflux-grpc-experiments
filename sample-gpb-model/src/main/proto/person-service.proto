@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "person.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "PersonServiceWrapper";
+option java_package = "com.ctoader.learn";
+option objc_class_prefix = "PS";
+
+package learn;
+
+service PersonService {
+    rpc findPeople(google.protobuf.Empty) returns (stream Person) {}
+}

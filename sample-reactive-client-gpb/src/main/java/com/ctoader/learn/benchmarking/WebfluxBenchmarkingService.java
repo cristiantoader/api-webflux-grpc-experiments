@@ -1,32 +1,34 @@
-package com.ctoader.learn;
+package com.ctoader.learn.benchmarking;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import lombok.extern.slf4j.Slf4j;
+import com.ctoader.learn.ByteArrayWrapper;
+import com.ctoader.learn.PersonWrapper;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-@Component
-@Slf4j
-public class ReactiveClientRunner implements ApplicationRunner {
+@Service
+public class WebfluxBenchmarkingService implements BenchmarkingService {
 
     private final MetricRegistry metricRegistry;
     private final WebClient webClient;
 
+    private static final String GPB_BYTES_PERSON_ENTRIES_PER_SECOND = "webflux_gpb_bytes_person_entries_per_second";
+    private static final String JSON_PERSON_ENTRIES_PER_SECOND = "webflux_json_person_entries_per_second";
+    private static final String GPB_PERSON_ENTRIES_PER_SECOND = "webflux_gpb_person_entries_per_second";
+
     @Autowired
-    public ReactiveClientRunner(MetricRegistry metricRegistry,
-                                WebClient webClient) {
+    public WebfluxBenchmarkingService(MetricRegistry metricRegistry,
+                                      WebClient webClient) {
         this.metricRegistry = metricRegistry;
         this.webClient = webClient;
     }
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run() {
         runGpbBytesBenchmarking();
         runJsonBenchmarking();
         runGpbBenchmarking();
@@ -38,10 +40,10 @@ public class ReactiveClientRunner implements ApplicationRunner {
                 .retrieve()
                 .bodyToFlux(ByteArrayWrapper.class);
 
-        Meter personEntriesPerSecond = metricRegistry.meter("gpb_bytes_person_entries_per_second");
+        Meter personEntriesPerSecond = metricRegistry.meter(GPB_BYTES_PERSON_ENTRIES_PER_SECOND);
 
         personFlux.map(Unchecked.function(it -> PersonWrapper.Person.parseFrom(it.getBytes())))
-                  .subscribe(it -> personEntriesPerSecond.mark());
+                .subscribe(it -> personEntriesPerSecond.mark());
     }
 
     private void runJsonBenchmarking() {
@@ -50,7 +52,7 @@ public class ReactiveClientRunner implements ApplicationRunner {
                 .retrieve()
                 .bodyToFlux(String.class);
 
-        Meter personEntriesPerSecond = metricRegistry.meter("json_person_entries_per_second");
+        Meter personEntriesPerSecond = metricRegistry.meter(JSON_PERSON_ENTRIES_PER_SECOND);
         personFlux.subscribe(person -> personEntriesPerSecond.mark());
     }
 
@@ -60,8 +62,7 @@ public class ReactiveClientRunner implements ApplicationRunner {
                 .retrieve()
                 .bodyToFlux(PersonWrapper.Person.class);
 
-        Meter personEntriesPerSecond = metricRegistry.meter("gpb_person_entries_per_second");
+        Meter personEntriesPerSecond = metricRegistry.meter(GPB_PERSON_ENTRIES_PER_SECOND);
         personFlux.subscribe(person -> personEntriesPerSecond.mark());
     }
-
 }
